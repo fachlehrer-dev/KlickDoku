@@ -1,0 +1,60 @@
+KlickDoku - Lizenz- und Hinweisdatei
+=====================================
+
+Diese Datei gehört zu jeder Weitergabe der fertigen Programme
+(KlickDoku.exe, KlickDoku.dmg / KlickDoku.app). Sie liegt auch im Ordner
+"licenses" bei.
+
+1. Programm
+-----------
+KlickDoku steht unter der MIT-Lizenz (licenses/LICENSE-KlickDoku-MIT.txt).
+Es wird ohne jede Gewährleistung bereitgestellt.
+
+Quellcode:  https://github.com/fachlehrer-dev/KlickDoku
+
+Das Programm lässt sich mit den Skripten build.bat (Windows) und build.sh
+(macOS) aus dem Quellcode selbst neu bauen.
+
+2. Enthaltene Bibliotheken
+--------------------------
+Windows und macOS:
+  customtkinter   MIT        licenses/LICENSE-customtkinter-MIT.txt
+  mss             MIT        licenses/LICENSE-mss-MIT.txt
+  Pillow          MIT-CMU    licenses/LICENSE-Pillow-MIT-CMU.txt
+  reportlab       BSD        licenses/LICENSE-reportlab-BSD.txt
+  pynput          LGPL-3.0   licenses/LICENSE-pynput-LGPL-3.0.txt
+Nur Windows:
+  uiautomation    Apache-2.0 licenses/LICENSE-uiautomation-Apache-2.0.txt
+Nur macOS:
+  PyObjC          MIT        licenses/LICENSE-pyobjc-MIT.txt
+Außerdem: Python (PSF-Lizenz) sowie Tcl/Tk (BSD-ähnlich); das Programm wurde mit
+PyInstaller gebaut (dessen Lizenz erlaubt die Weitergabe der gebauten Programme).
+
+pynput (LGPL-3.0): Die Bibliothek wird unverändert verwendet. Sie können sie
+ersetzen, indem Sie KlickDoku mit einer eigenen Version aus dem Quellcode
+(siehe oben) neu bauen. Den LGPL-Text finden Sie in licenses/LICENSE-pynput-LGPL-3.0.txt;
+er verweist auf die GNU GPL 3: https://www.gnu.org/licenses/gpl-3.0.html
+
+reportlab bringt Beispielschriften mit (Bitstream Vera, DarkGarden). KlickDoku
+verwendet sie nicht; für das PDF wird eine auf dem Rechner vorhandene Schrift
+(Segoe UI, Arial, DejaVu Sans) als Teilmenge eingebettet.
+
+3. Datenschutz
+--------------
+KlickDoku verarbeitet alles lokal und überträgt keine Daten. Getippter Text wird
+nicht aufgezeichnet. Screenshots zeigen jedoch alles, was auf dem Bildschirm
+sichtbar ist - vor dem Weitergeben von Anleitungen prüfen und ggf. verwischen.
+
+4. Systemhinweise
+-----------------
+Windows: Beim ersten Start kann SmartScreen warnen, weil die Datei nicht signiert
+ist ("Weitere Informationen" > "Trotzdem ausführen").
+macOS: Die App ist nur ad-hoc signiert und nicht notarisiert. Beim ersten Start:
+Rechtsklick > Öffnen. Unter Systemeinstellungen > Datenschutz & Sicherheit müssen
+Bedienungshilfen, Eingabeüberwachung und Bildschirmaufnahme erlaubt werden.
+
+--------------------------------------------------------------------------------
+English summary: KlickDoku is MIT-licensed, provided "as is" without warranty.
+It bundles third-party libraries under the licenses listed above (pynput:
+LGPL-3.0, unmodified and replaceable by rebuilding from source). Source code:
+see the link in section 1. Everything is processed locally; no data is sent.

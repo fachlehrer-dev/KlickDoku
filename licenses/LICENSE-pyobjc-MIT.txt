@@ -1,0 +1,3 @@
+PyObjC (pyobjc-framework-Quartz, pyobjc-framework-ApplicationServices; macOS)
+Copyright (c) the PyObjC authors. MIT License.
+Quelle / source: https://github.com/ronaldoussoren/pyobjc
