@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build EXE
+        shell: cmd
+        run: build.bat
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KlickDoku-windows
+          path: |
+            dist/KlickDoku.exe
+            dist/LIZENZHINWEISE.txt
+            dist/licenses
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build DMG
+        run: bash build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KlickDoku-macos
+          path: dist/KlickDoku.dmg
