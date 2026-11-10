@@ -35,7 +35,8 @@ Der Ordner `img_Titel` muss beim Weitergeben der HTML-Dateien daneben liegen (od
 - **Hinweis:** Freitext ohne Schrittnummer.
 - **Prüf-Dialog beim Beenden:** Formate wählen; Texte ändern, ↑↓ verschieben, ✕ löschen, ¶ Abschnitt davor, **＋** Schritt davor einfügen („＋ Schritt am Ende“ unten). Vorschaubild anklicken öffnet den Bildeditor.
 - **Bildeditor:** Textmarker und Rahmen (Rechteck aufziehen), Pfeil (ziehen), Verwischen (Bereich aufziehen, wird verpixelt). Farbwahl, ↶ Rückgängig (Strg+Z), „Übernehmen“.
-- Oben rechts wechselt ◐ zwischen hell und dunkel. Einstellungen werden gespeichert.
+- Oben rechts öffnet **?** ein Info-Fenster (Version, Herausgeber, Autor, Link zum Quellcode); ◐ wechselt zwischen hell und dunkel. Die Versionsnummer steht auch in der Titelleiste.
+- Einstellungen werden gespeichert.
 
 | | Windows | macOS |
 |---|---|---|
@@ -50,7 +51,7 @@ Windows: Das Programmfenster ist selbst nicht in den Screenshots zu sehen. macOS
 
 - **Bildschirm des Klicks** (Standard) – Screenshot des Monitors, auf dem geklickt wurde
 - **Alle Bildschirme** – ein breites Bild
-- **Nur Bildschirm 1, 2, 3 …** – Klicks auf anderen Monitoren werden ignoriert
+- **Nur Bildschirm 1, 2, 3 …** – Klicks auf anderen Monitoren werden ignoriert. Die Auswahlliste zeigt die Auflösung; beim Auswählen (und mit dem 🖥-Knopf daneben) wird auf jedem Monitor kurz seine Nummer eingeblendet, der gewählte ist farbig hervorgehoben
 - **Fenster des Klicks** – Screenshot nur vom angeklickten Fenster
 - **Nur bestimmtes Fenster …** – Fenster aus der Liste offener Fenster wählen (↻ aktualisiert). Es wird beim Start in den Vordergrund geholt; Klicks und Eingaben in anderen Anwendungen werden ignoriert, Menüs und Dialoge derselben Anwendung zählen mit.
 - **Nur fester Bereich …** – Rechteck aufziehen; Klicks außerhalb werden ignoriert.

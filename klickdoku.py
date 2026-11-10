@@ -36,6 +36,11 @@ import threading
 import time
 from dataclasses import dataclass
 
+APP_VERSION = "1.0.0"
+PUBLISHER = ("fachlehrer.dev", "https://fachlehrer.dev")
+AUTHOR = "Manfred Maier"
+REPO_URL = "https://github.com/fachlehrer-dev/KlickDoku"
+
 IS_WIN = sys.platform == "win32"
 IS_MAC = sys.platform == "darwin"
 MAX_W = 1600      # Screenshots werden auf diese Breite verkleinert
@@ -88,7 +93,9 @@ TEXTS = {
         review_title="Schritte prüfen und bearbeiten",
         review_save="Speichern", review_cancel="Verwerfen",
         review_hint="Texte direkt ändern · ↑↓ verschieben · ✕ löschen · ¶ Abschnitt davor · ＋ Schritt davor · Bild anklicken = bearbeiten",
-        add_step="＋ Schritt am Ende", ed_title="Bild bearbeiten", ed_marker="Textmarker",
+        add_step="＋ Schritt am Ende", ident_tip="Bildschirmnummern kurz einblenden", about_title="Über KlickDoku", about_publisher="Herausgeber",
+        about_author="Autor", about_repo="Quellcode", about_version="Version", about_license="Lizenz: MIT",
+        about_note="Alle Daten bleiben lokal. Getippter Text wird nicht aufgezeichnet.", close="Schließen", ed_title="Bild bearbeiten", ed_marker="Textmarker",
         ed_frame="Rahmen", ed_arrow="Pfeil", ed_blur="Verwischen", ed_undo="Rückgängig",
         ed_apply="Übernehmen", ed_color="Farbe", ed_hint="Zum Bearbeiten das Bild anklicken", new_step_ph="Neuer Schritt …",
         fmt_choose="Diese Formate erstellen:", export_title="Export",
@@ -141,7 +148,9 @@ TEXTS = {
         review_title="Review and edit steps",
         review_save="Save", review_cancel="Discard",
         review_hint="Edit texts directly · ↑↓ move · ✕ delete · ¶ section before · ＋ insert step before · click image to edit",
-        add_step="＋ Step at end", ed_title="Edit image", ed_marker="Highlighter",
+        add_step="＋ Step at end", ident_tip="Briefly show screen numbers", about_title="About KlickDoku", about_publisher="Publisher",
+        about_author="Author", about_repo="Source code", about_version="Version", about_license="License: MIT",
+        about_note="All data stays local. Typed text is not recorded.", close="Close", ed_title="Edit image", ed_marker="Highlighter",
         ed_frame="Frame", ed_arrow="Arrow", ed_blur="Blur", ed_undo="Undo",
         ed_apply="Apply", ed_color="Color", ed_hint="Click the image to edit it", new_step_ph="New step …",
         fmt_choose="Create these formats:", export_title="Export",
@@ -1535,7 +1544,7 @@ def run_gui(lang: str) -> None:
     TXT = ("#111827", "#e5e7eb")
 
     root = ctk.CTk()
-    root.title(T["app"])
+    root.title(f"{T['app']} {APP_VERSION}")
     root.attributes("-topmost", True)
     root.resizable(False, False)
     root.update_idletasks()
@@ -1554,12 +1563,15 @@ def run_gui(lang: str) -> None:
     import mss
     with new_mss(mss) as _s:
         n_mon = len(_s.monitors) - 1
+        mon_geo = [(m["left"], m["top"], m["width"], m["height"])
+                   for m in _s.monitors[1:]]
         bounds = (_s.monitors[0]["left"], _s.monitors[0]["top"],
                   _s.monitors[0]["width"], _s.monitors[0]["height"])
     modes = [("screen", T["m_screen"])]
     if n_mon > 1:
         modes.append(("all", T["m_all"]))
-        modes += [(f"monitor:{i}", T["m_mon"].format(n=i))
+        modes += [(f"monitor:{i}",
+                   T["m_mon"].format(n=i) + f"  ({mon_geo[i - 1][2]}×{mon_geo[i - 1][3]})")
                   for i in range(1, n_mon + 1)]
     modes += [("window", T["m_window"]), ("target", T["m_target"]),
               ("region", T["m_region"])]
@@ -1592,6 +1604,46 @@ def run_gui(lang: str) -> None:
                   command=lambda: ctk.set_appearance_mode(
                       "light" if ctk.get_appearance_mode() == "Dark" else "dark")
                   ).pack(side="right")
+    def show_about() -> None:
+        import webbrowser
+        w = ctk.CTkToplevel(root)
+        w.title(T["about_title"])
+        w.geometry("400x330")
+        w.resizable(False, False)
+        w.attributes("-topmost", True)
+        ctk.CTkLabel(w, text="KlickDoku", font=ctk.CTkFont(size=24, weight="bold"),
+                     text_color=ACC).pack(pady=(20, 0))
+        ctk.CTkLabel(w, text=f"{T['about_version']} {APP_VERSION}",
+                     text_color=MUT).pack()
+        box = ctk.CTkFrame(w, fg_color="transparent")
+        box.pack(pady=14, padx=24, fill="x")
+        box.grid_columnconfigure(1, weight=1)
+
+        def row(r, label, text, url=None):
+            ctk.CTkLabel(box, text=label + ":", text_color=MUT, anchor="w",
+                         width=90).grid(row=r, column=0, sticky="nw", pady=3)
+            lb = ctk.CTkLabel(box, text=text, anchor="w", justify="left",
+                              wraplength=260,
+                              text_color=ACC if url else TXT,
+                              cursor="hand2" if url else "")
+            lb.grid(row=r, column=1, sticky="w", pady=3)
+            if url:
+                lb.bind("<Button-1>", lambda e, u=url: webbrowser.open(u))
+
+        row(0, T["about_publisher"], PUBLISHER[0], PUBLISHER[1])
+        row(1, T["about_author"], AUTHOR)
+        row(2, T["about_repo"], "github.com/fachlehrer-dev/KlickDoku", REPO_URL)
+        row(3, "", T["about_license"])
+        ctk.CTkLabel(w, text=T["about_note"], text_color=MUT, wraplength=340,
+                     font=ctk.CTkFont(size=11)).pack(padx=24)
+        ctk.CTkButton(w, text=T["close"], width=120, height=34, corner_radius=10,
+                      fg_color=ACC, hover_color=ACC_H,
+                      command=w.destroy).pack(pady=16)
+        w.after(150, lambda: (w.focus_force(), w.lift()))
+
+    ctk.CTkButton(head, text="?", width=30, height=28, fg_color=SOFT,
+                  hover_color=SOFT_H, text_color=TXT,
+                  command=show_about).pack(side="right", padx=(0, 4))
     counter = ctk.CTkLabel(head, text=T["count"].format(n=0), text_color=MUT)
     counter.pack(side="right", padx=10)
 
@@ -1604,12 +1656,39 @@ def run_gui(lang: str) -> None:
 
     # --- Aufnahmebereich ---------------------------------------------------
     small(card, T["cap"]).pack(fill="x", padx=20, pady=(10, 0))
-    mode_menu = ctk.CTkOptionMenu(card, values=mode_labels, height=36,
+    mode_row = ctk.CTkFrame(card, fg_color="transparent")
+    mode_row.pack(padx=18, pady=(2, 0), fill="x")
+    mode_menu = ctk.CTkOptionMenu(mode_row, values=mode_labels, height=36,
                                   corner_radius=10, fg_color=SOFT,
                                   button_color=SOFT_H, button_hover_color=SOFT_H,
                                   text_color=TXT,
                                   dropdown_font=ctk.CTkFont(size=13))
-    mode_menu.pack(padx=18, pady=(2, 0), fill="x")
+    mode_menu.pack(side="left", fill="x", expand=True)
+
+    def flash_screens(active=None) -> None:
+        """Blendet auf jedem Monitor kurz dessen Nummer ein (active: Nummer oder
+        None = alle hervorgehoben)."""
+        import tkinter as _t
+        for i, (ml, mt, mw, mh) in enumerate(mon_geo, 1):
+            on = active is None or active == i
+            ov = _t.Toplevel(root)
+            ov.overrideredirect(True)
+            ov.attributes("-topmost", True)
+            w, h = 230, 190
+            ov.geometry(f"{w}x{h}+{ml + (mw - w) // 2}+{mt + (mh - h) // 2}")
+            ov.configure(bg=ACC if on else "#374151")
+            _t.Label(ov, text=str(i), font=("Segoe UI", 88, "bold"),
+                     fg="#ffffff" if on else "#9ca3af",
+                     bg=ACC if on else "#374151").pack(expand=True, fill="both")
+            ov.after(2200, ov.destroy)
+
+    if n_mon > 1:
+        ctk.CTkButton(mode_row, text="🖥", width=40, height=36, corner_radius=10,
+                      fg_color=SOFT, hover_color=SOFT_H, text_color=TXT,
+                      command=lambda: flash_screens(
+                          int(rec.mode.split(":")[1])
+                          if rec.mode.startswith("monitor:") else None)
+                      ).pack(side="left", padx=(6, 0))
 
     extra = ctk.CTkFrame(card, fg_color="transparent")     # je nach Modus gefuellt
     region_row = ctk.CTkFrame(extra, fg_color="transparent")
@@ -1735,18 +1814,22 @@ def run_gui(lang: str) -> None:
 
     def on_mode(choice: str) -> None:
         rec.mode = modes[mode_labels.index(choice)][0]
+        if rec.mode.startswith("monitor:"):
+            flash_screens(int(rec.mode.split(":")[1]))
+        elif rec.mode == "all":
+            flash_screens(None)
         extra.pack_forget()
         region_row.pack_forget()
         win_row.pack_forget()
         if rec.mode == "region":
             region_row.pack(fill="x")
-            extra.pack(padx=18, pady=(6, 0), fill="x", after=mode_menu)
+            extra.pack(padx=18, pady=(6, 0), fill="x", after=mode_row)
             if rec.region is None and not choose_region():
                 mode_menu.set(mode_labels[0])
                 on_mode(mode_labels[0])
         elif rec.mode == "target":
             win_row.pack(fill="x")
-            extra.pack(padx=18, pady=(6, 0), fill="x", after=mode_menu)
+            extra.pack(padx=18, pady=(6, 0), fill="x", after=mode_row)
             refresh_windows()
 
     mode_menu.configure(command=on_mode)
